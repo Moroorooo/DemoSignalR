@@ -1,0 +1,114 @@
+﻿@page
+@model Demo_SignalR.Pages.BadmintonFieldPages.IndexModel
+@inject Microsoft.AspNetCore.SignalR.IHubContext<SignalrServer> _hubContext
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index - Demo_SignalR</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/site.css?v=AKvNjO3dCPPS0eSU1Ez8T2wI280i08yGycV9ndytL-c" />
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-3">
+            <h1>Index</h1>
+            <p>
+                <a asp-page="Create">Create New</a>
+            </p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>BadmintonFieldName</th>
+                        <th>Address</th>
+                        <th>Description</th>
+                        <th>StartTime</th>
+                        <th>EndTime</th>
+                        <th>IsActive</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    @foreach (var item in Model.BadmintonField)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.BadmintonFieldName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Address)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                            <td>@Html.DisplayFor(modelItem => item.StartTime)</td>
+                            <td>@Html.DisplayFor(modelItem => item.EndTime)</td>
+                            <td>@Html.DisplayFor(modelItem => item.IsActive)</td>
+                            <td>
+                                <a asp-page="./Edit" asp-route-id="@item.BadmintonFieldId">Edit</a> |
+                                <a asp-page="./Details" asp-route-id="@item.BadmintonFieldId">Details</a> |
+                                <a asp-page="./Delete" asp-route-id="@item.BadmintonFieldId">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </main>
+    </div>
+
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script>
+        $(document).ready(function () {
+            var connection = new signalR.HubConnectionBuilder().withUrl("/signalrServer").build();
+
+            connection.start().then(function () {
+                console.log("SignalR Connected");
+
+                connection.on("ReceiveCreateField", function (field) {
+                    LoadData();
+                });
+
+                connection.on("ReceiveUpdatedField", function (field) {
+                    LoadData();
+                });
+
+                connection.on("ReceiveDeletedField", function (field) {
+                    LoadData();
+                });
+
+                LoadData();
+            }).catch(function (err) {
+                console.error(err.toString());
+            });
+
+            function LoadData() {
+                $.ajax({
+                    url: '/BadmintonFieldPages?handler=Fields',
+                    method: 'GET',
+                    success: function (result) {
+                        var tr = '';
+                        $.each(result, function (k, v) {
+                            tr += '<tr>' +
+                                '<td>' + v.badmintonFieldName + '</td>' +
+                                '<td>' + v.address + '</td>' +
+                                '<td>' + v.description + '</td>' +
+                                '<td>' + v.startTime + '</td>' +
+                                '<td>' + v.endTime + '</td>' +
+                                '<td>' + v.isActive + '</td>' +
+                                '<td>' +
+                                '<a href="../BadmintonFieldPages/Edit?id=' + v.badmintonFieldId + '">Edit</a> ' +
+                                '<a href="../BadmintonFieldPages/Details?id=' + v.badmintonFieldId + '">Details</a> ' +
+                                '<a href="../BadmintonFieldPages/Delete?id=' + v.badmintonFieldId + '">Delete</a>' +
+                                '</td>' +
+                                '</tr>';
+                        });
+                        $('#tableBody').html(tr);
+                    },
+                    error: function (error) {
+                        console.error(error);
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

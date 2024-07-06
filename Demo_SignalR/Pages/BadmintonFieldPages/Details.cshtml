@@ -1,0 +1,59 @@
+﻿@page
+@model Demo_SignalR.Pages.BadmintonFieldPages.DetailsModel
+@inject Microsoft.AspNetCore.SignalR.IHubContext<SignalrServer> _hubContext
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>BadmintonField</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.BadmintonField.BadmintonFieldName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.BadmintonField.BadmintonFieldName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.BadmintonField.Address)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.BadmintonField.Address)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.BadmintonField.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.BadmintonField.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.BadmintonField.StartTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.BadmintonField.StartTime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.BadmintonField.EndTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.BadmintonField.EndTime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.BadmintonField.IsActive)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.BadmintonField.IsActive)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.BadmintonField?.BadmintonFieldId">Edit</a> |
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+<script src="~/microsoft/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/site.js"></script>
